@@ -31,7 +31,7 @@ def get_faculty_subjects(short_name):
 all_subjects = []
 
 for faculty in faculties:
-    all_subjects.append(get_faculty_subjects(faculty))
+    all_subjects += get_faculty_subjects(faculty)
 
 with open("./data/subjects.json", 'w') as file:
     file.write(json.dumps(all_subjects))

@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
+import json
+import sys
 
 
 def is_class_row(tag):
@@ -18,7 +20,7 @@ def fetch_classes(subject_code):
         "filter": "",
         "filter_name": "",
         "faculty": "ALL",
-        "unassigned": str(subject_code) + "31269_SPR_U_1_S",
+        "unassigned": str(subject_code) + "_SPR_U_1_S",
         "assigned": str(subject_code) + "_SPR_U_1_S",
         "activity_types": "ALL",
         "day": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -50,4 +52,24 @@ def fetch_classes(subject_code):
             })
         return classes
 
-print(fetch_classes(31269))
+
+subjects = []
+
+with open("./data/subjects.json") as file:
+    subjects = json.load(file)
+
+total = len(subjects)
+count = 0
+
+classes = []
+
+for subject in subjects:
+    count += 1
+    print("{} of {} fetching data for: {} {}".format(count, total, subject["code"], subject["name"]))
+    s = subject
+    s["classes"] = fetch_classes(subject["code"])
+    classes.append(s)
+
+
+with open("./data/classes.json", "w+") as file:
+    file.write(json.dumps(classes))
